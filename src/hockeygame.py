@@ -52,6 +52,7 @@ class Paddle(pygame.sprite.Sprite):
         self.image.fill(WHITE)
         self.image.set_colorkey(WHITE)
         pygame.draw.rect(self.image, color, [0, 0, 100, 10])
+        self.rect=self.image.get_rect()
 
     def moveLeft(self, pixels):
         self.rect.x-=pixels
@@ -91,10 +92,10 @@ screen = pygame.display.set_mode( (600, 600) )
 pygame.display.set_caption("Air Hockey")
 screen.fill(BLACK)
 
-while carryOn:
+while carryOn==True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            carryOn = False
+           carryOn = False
 
     pygame.draw.line(screen, (255, 255, 255), (0, 299), (600, 299),5)
     pygame.display.flip()
@@ -114,4 +115,6 @@ while carryOn:
    
     #check collision between paddle and puck
     if pygame.sprite.collide_mask(puck, paddleA) or pygame.sprite.collide_mask(puck, paddleB):
-       puck.bounce()
+      puck.bounce()
+
+    pygame.display.flip()
