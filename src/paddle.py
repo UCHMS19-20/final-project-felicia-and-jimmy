@@ -10,7 +10,7 @@ class Paddle(pygame.sprite.Sprite):
         self.image.fill(WHITE)
         self.image.set_colorkey(WHITE)
         pygame.draw.rect(self.image, color, [0, 0, width, height])
-        self.rect=self.image.get.rect()
+        self.rect=self.image.get_rect()
 
         def moveLeft(self, pixels):
             self.rect.x-=pixels
