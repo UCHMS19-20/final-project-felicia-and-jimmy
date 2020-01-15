@@ -79,29 +79,13 @@ carryOn=True
 screen = pygame.display.set_mode( (600, 600) )
 pygame.display.set_caption("Air Hockey")
 screen.fill(BLACK)
-pygame.draw.line(screen, WHITE, [0, 299], [600, 299],5)
 
 while carryOn:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             carryOn = False
 
-    joystick_count=pygame.joystick.get_count()
-    if joystick_count<1:
-        pygame.quit()
-        exit()
-    else:
-        joystick1=pygame.joystick.Joystick(0)
-        joystick1.init()
-        joystick2=pygame.joystick.Joystick(1)
-        joystick2.init()
-
-    player1=Player(joystick1, 580)
-    player2=Player(joystick2, 25)
-
-    movingsprites=pygame.sprite.Group()
-    movingsprites.add(player1)
-    movingsprites.add(player2)
-    movingsprites.add(puck)
+    pygame.draw.line(screen, (255, 255, 255), (0, 299), (600, 299),5)
+    pygame.display.flip()
 
    
