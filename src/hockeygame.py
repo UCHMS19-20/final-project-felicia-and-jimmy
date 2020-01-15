@@ -14,18 +14,14 @@ BLUE=(0, 255, 255)
 
 #creating puck
 class Puck(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, color, width, height):
         super().__init__()
-        self.image = pygame.surface([10, 10])
+        self.image = pygame.Surface([10, 10])
         self.image.fill(BLUE)
+        self.image.set_colorkey(BLUE)
+        pygame.draw.rect(self.image, color, [0, 0, width, height])
+        self.velocity=[random.randint(4,8), random.randint(-8, 8)]
         self.rect=self.image.get_rect()
-        self.speed = 0
-        self.x = 0
-        self.y = 0
-        self.direction = 0
-        self.width = 10
-        self.height = 10
-        self.resetgame()
 
     def resetgame(self):
         self.x = random.randrange(50, 550)
@@ -36,40 +32,55 @@ class Puck(pygame.sprite.Sprite):
     def bounce(self, diff):
         self.direction=(180-self.direction)%360
         self.direction-=diff
-        self.speed *= 1.1
+        self.velocity *= 1.1
 
     def update(self):
-        if self.y<0:
+        if self.rect.y<0:
             self.resetgame()
-        if self.y>600:
+        if self.rect.y>600:
             self.resetgame()
-        if self.x<=0:
+        if self.rect.x<=0:
             self.bounce()
-        if self.x>=600:
+        if self.rect.x>=600:
             self.bounce()
 
-class Player(pygame.sprite.Sprite):
-    def __init__(self, joystick, ypos):
+#create a paddle class from the Sprite class in pygame. Sprites are a base class for different types of obkects in a game.
+class Paddle(pygame.sprite.Sprite):
+    def __init__(self, color, width, height):
         super().__init__()
-        self.width=75
-        self.height=15
-        self.image=pygame.Surface([self.width, self.height])
+        self.image=pygame.Surface([width, height])
         self.image.fill(WHITE)
-        self.joystick=joystick
+        self.image.set_colorkey(WHITE)
+        pygame.draw.rect(self.image, color, [0, 0, 100, 10])
 
-        self.rect=self.image.get_rect()
-        self.screenheight=pygame.display.get_surface().get_height()
-        self.screenwidth = pygame.display.get_surface().get_width()
-        self.rect.x=0
-        self.rect.y=ypos
-
-    def update(self):
-        xaxis_pos=self.joystick.get_axis(0)
-        self.rect.x=self.rect.x+xaxis_pos*15
-        if self.rect.x>600:
-            self.rect.x=600
+    def moveLeft(self, pixels):
+        self.rect.x-=pixels
         if self.rect.x<0:
             self.rect.x=0
+
+    def moveRight(self, pixels):
+        self.rect.x+=pixels
+        if self.rect.x>600:
+            self.rect.x=600
+
+paddleA=Paddle(WHITE, 100, 10)
+paddleA.x=300
+paddleA.y=20
+
+paddleB=Paddle(WHITE, 100, 10)
+paddleB.x=300
+paddleB.y=580
+
+puck=Puck(BLUE, 10, 10)
+puck.rect.x=300
+puck.rect.y=300
+
+all_sprites_list = pygame.sprite.Group()
+all_sprites_list.add(paddleA)
+all_sprites_list.add(paddleB)
+all_sprites_list.add(puck)
+
+
 score1=0
 score2=0
 
@@ -88,4 +99,19 @@ while carryOn:
     pygame.draw.line(screen, (255, 255, 255), (0, 299), (600, 299),5)
     pygame.display.flip()
 
+    #moving paddle when the user presses arrow keys (player A) or a/d keys (player B)
+    keys=pygame.key.get_pressed()
+    if keys[pygame.K_a]:
+        paddleA.moveLeft(5)
+    if keys[pygame.K_d]:
+        paddleA.moveRight(5)
+    if keys[pygame.K_LEFT]:
+        paddleB.moveLeft(5)
+    if keys[pygame.K_RIGHT]:
+        paddleB.moveRight(5)
+
+    all_sprites_list.update()
    
+    #check collision between paddle and puck
+    if pygame.sprite.collide_mask(puck, paddleA) or pygame.sprite.collide_mask(puck, paddleB):
+       puck.bounce()
