@@ -64,6 +64,7 @@ class Paddle(pygame.sprite.Sprite):
         if self.rect.x>600:
             self.rect.x=600
 
+
 paddleA=Paddle(WHITE, 100, 10)
 paddleA.x=300
 paddleA.y=20
