@@ -13,6 +13,19 @@ BLUE=(0, 255, 255)
 
 
 #creating puck
+class Puck:
+    def __init__(self, width, height):
+        self.image=pygame.image.load('src/image/bluecircle.png')
+        self.x=w//2
+        self.y=0
+        self.width=width
+        self.height=height
+    
+    def show(self):
+        screen.blit(self.image, self.x, self.y)
+
+Puck=Puck(50, 50)
+
 class Puck(pygame.sprite.Sprite):
     def __init__(self, color, width, height):
         super().__init__()
@@ -98,6 +111,8 @@ while carryOn==True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
            carryOn = False
+
+    puck.show()
 
 
     pygame.draw.line(screen, (255, 255, 255), (0, 299), (600, 299),5)
