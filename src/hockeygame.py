@@ -51,7 +51,7 @@ class Paddle(pygame.sprite.Sprite):
         self.image=pygame.Surface([width, height])
         self.image.fill(WHITE)
         self.image.set_colorkey(WHITE)
-        pygame.draw.rect(self.image, color, [0, 0, 100, 10])
+        pygame.draw.rect(self.image, color, [0, 0, width, height])
         self.rect=self.image.get_rect()
 
     def moveLeft(self, pixels):
@@ -66,16 +66,17 @@ class Paddle(pygame.sprite.Sprite):
 
 
 paddleA=Paddle(WHITE, 100, 10)
-paddleA.x=300
-paddleA.y=20
+paddleA.rect.x=300
+paddleA.rect.y=20
 
 paddleB=Paddle(WHITE, 100, 10)
-paddleB.x=300
-paddleB.y=580
+paddleB.rect.x=300
+paddleB.rect.y=580
 
 puck=Puck(BLUE, 10, 10)
 puck.rect.x=300
 puck.rect.y=300
+
 
 all_sprites_list = pygame.sprite.Group()
 all_sprites_list.add(paddleA)
@@ -98,8 +99,8 @@ while carryOn==True:
         if event.type == pygame.QUIT:
            carryOn = False
 
+
     pygame.draw.line(screen, (255, 255, 255), (0, 299), (600, 299),5)
-    pygame.display.flip()
 
     #moving paddle when the user presses arrow keys (player A) or a/d keys (player B)
     keys=pygame.key.get_pressed()
@@ -117,5 +118,7 @@ while carryOn==True:
     #check collision between paddle and puck
     if pygame.sprite.collide_mask(puck, paddleA) or pygame.sprite.collide_mask(puck, paddleB):
       puck.bounce()
-
+    
+    all_sprites_list.draw(screen)
     pygame.display.flip()
+
