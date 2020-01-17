@@ -14,87 +14,50 @@ BLUE=(0, 255, 255)
 
 #creating puck
 class Puck:
-    def __init__(self, width, height):
-        self.image=pygame.image.load('src/image/bluecircle.png')
-        self.x=w//2
-        self.y=0
-        self.width=width
-        self.height=height
+    def __init__(self, x, y):
+        self.image=pygame.image.load('src/img/bluecircle.png')
+        self.image = pygame.transform.scale(self.image, (50, 50))
+        self.rect=self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
     
     def show(self):
-        screen.blit(self.image, self.x, self.y)
+        screen.blit(self.image, self.rect)
 
-Puck=Puck(50, 50)
-
-class Puck(pygame.sprite.Sprite):
-    def __init__(self, color, width, height):
-        super().__init__()
-        self.image = pygame.Surface([10, 10])
-        self.image.fill(BLUE)
-        self.image.set_colorkey(BLUE)
-        pygame.draw.rect(self.image, color, [0, 0, width, height])
-        self.velocity=[random.randint(4,8), random.randint(-8, 8)]
-        self.rect=self.image.get_rect()
-
-    def resetgame(self):
-        self.x = random.randrange(50, 550)
-        self.y=300.0
-        self.speed=8.0
+    def start(self):
+        self.velocity=8
         self.direction=random.randrange(-45, 45)
-        
+    
     def bounce(self, diff):
         self.direction=(180-self.direction)%360
         self.direction-=diff
-        self.velocity *= 1.1
+        self.velocity *=1.1
+    
+    def checkhit(self, paddle):
+        if self.rect.colliderect(Paddle.rect):
+            Puck.bounce()
 
-    def update(self):
-        if self.rect.y<0:
-            self.resetgame()
-        if self.rect.y>600:
-            self.resetgame()
-        if self.rect.x<=0:
-            self.bounce()
-        if self.rect.x>=600:
-            self.bounce()
-
-#create a paddle class from the Sprite class in pygame. Sprites are a base class for different types of obkects in a game.
-class Paddle(pygame.sprite.Sprite):
-    def __init__(self, color, width, height):
-        super().__init__()
-        self.image=pygame.Surface([width, height])
-        self.image.fill(WHITE)
-        self.image.set_colorkey(WHITE)
-        pygame.draw.rect(self.image, color, [0, 0, width, height])
+class Paddle:
+    def __init__(self, x, y):
+        self.image=pygame.image.load('src/img/blackrectangle.png')
+        self.image=pygame.transform.scale(self.image, (200, 100))
         self.rect=self.image.get_rect()
+        self.rect.x, self.rect.y = x,y
+
+    def show(self):
+        screen.blit(self.image, self.rect)
 
     def moveLeft(self, pixels):
         self.rect.x-=pixels
         if self.rect.x<0:
             self.rect.x=0
-
     def moveRight(self, pixels):
         self.rect.x+=pixels
         if self.rect.x>600:
             self.rect.x=600
 
-
-paddleA=Paddle(WHITE, 100, 10)
-paddleA.rect.x=300
-paddleA.rect.y=20
-
-paddleB=Paddle(WHITE, 100, 10)
-paddleB.rect.x=300
-paddleB.rect.y=580
-
-puck=Puck(BLUE, 10, 10)
-puck.rect.x=300
-puck.rect.y=300
-
-
-all_sprites_list = pygame.sprite.Group()
-all_sprites_list.add(paddleA)
-all_sprites_list.add(paddleB)
-all_sprites_list.add(puck)
+Puck=Puck(275, 275)
+PaddleA=Paddle(30, 550)
+PaddleB=Paddle(200, 50)
 
 
 score1=0
@@ -105,35 +68,34 @@ carryOn=True
 #clearing screen and setting up midline
 screen = pygame.display.set_mode( (600, 600) )
 pygame.display.set_caption("Air Hockey")
-screen.fill(BLACK)
+screen.fill(WHITE)
+pygame.draw.line(screen, BLACK, (0, 299), (600, 299),5)
+pygame.display.flip()
+
 
 while carryOn==True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
            carryOn = False
 
-    puck.show()
+    Puck.show()
+    PaddleA.show()
+    PaddleB.show()
+    
+    Puck.start()
 
-
-    pygame.draw.line(screen, (255, 255, 255), (0, 299), (600, 299),5)
 
     #moving paddle when the user presses arrow keys (player A) or a/d keys (player B)
     keys=pygame.key.get_pressed()
     if keys[pygame.K_a]:
-        paddleA.moveLeft(5)
+        PaddleA.moveLeft(5)
     if keys[pygame.K_d]:
-        paddleA.moveRight(5)
+        PaddleA.moveRight(5)
     if keys[pygame.K_LEFT]:
-        paddleB.moveLeft(5)
+        PaddleB.moveLeft(5)
     if keys[pygame.K_RIGHT]:
-        paddleB.moveRight(5)
+        PaddleB.moveRight(5)
 
-    all_sprites_list.update()
-   
-    #check collision between paddle and puck
-    if pygame.sprite.collide_mask(puck, paddleA) or pygame.sprite.collide_mask(puck, paddleB):
-      puck.bounce()
-    
-    all_sprites_list.draw(screen)
+  
     pygame.display.flip()
 
