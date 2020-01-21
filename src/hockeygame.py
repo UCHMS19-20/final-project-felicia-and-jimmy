@@ -47,16 +47,16 @@ class Paddle:
         screen.blit(self.image, self.rect)
 
     def moveLeft(self, pixels):
-        self.rect.x-=pixels
+        self.rect.x -=pixels
         if self.rect.x<0:
             self.rect.x=0
     def moveRight(self, pixels):
-        self.rect.x+=pixels
+        self.rect.x +=pixels
         if self.rect.x>600:
             self.rect.x=600
 
 Puck=Puck(275, 275)
-PaddleA=Paddle(30, 550)
+PaddleA=Paddle(300, 400)
 PaddleB=Paddle(200, 50)
 
 
@@ -72,6 +72,7 @@ screen.fill(WHITE)
 pygame.draw.line(screen, BLACK, (0, 299), (600, 299),5)
 pygame.display.flip()
 
+clock=pygame.time.Clock()
 
 while carryOn==True:
     for event in pygame.event.get():
@@ -79,7 +80,7 @@ while carryOn==True:
            carryOn = False
 
     Puck.show()
-    PaddleA.show()
+    #PaddleA.show()
     PaddleB.show()
     
     Puck.start()
@@ -96,6 +97,7 @@ while carryOn==True:
     if keys[pygame.K_RIGHT]:
         PaddleB.moveRight(5)
 
-  
+    pygame.display.update()
+    clock.tick(120)
     pygame.display.flip()
 
