@@ -27,7 +27,7 @@ class Puck:
         """
         The puck used in the game
         """
-        self.image = pygame.image.load('src/bluecircle.png')  # Import the image
+        self.image = pygame.image.load('src/img/bluecircle.png')  # Import the image
         self.image = pygame.transform.scale(self.image, (50, 50))  # Resize the image
 
         # Get a reference to the surface's rect and set the position to the centre of the screen
@@ -158,7 +158,7 @@ class Paddle:
         :param x: The starting x position of the paddle
         :param y: The starting y position of the paddle
         """
-        self.image = pygame.image.load('src/blackrectangle.png')  # Load the image
+        self.image = pygame.image.load('src/img/blackrectangle.png')  # Load the image
         self.image = pygame.transform.scale(self.image, (200, 100))  # Resize the image
         # Get a reference to the surface's rect and set the position to the centre of the screen
         self.rect = self.image.get_rect(center=(x, y))
@@ -222,6 +222,7 @@ def menu():
     started = False  # Started flag
     
     
+    
     # Main loop
     while not started:
         screen.fill(WHITE)
@@ -232,7 +233,7 @@ def menu():
                 pygame.quit()
                 sys.exit()
 
-            if event.type == KEYDOWN:
+            if event.type == pygame.KEYDOWN:
                 if event.key == K_SPACE:
                     started = True  # Start when space is pressed
 
@@ -271,6 +272,7 @@ def game():
 
     # Main loop
     while True:
+        clock=pygame.time.Clock()
         draw_table()
 
         for event in pygame.event.get():
@@ -278,23 +280,19 @@ def game():
                 pygame.quit()
                 sys.exit()
 
-
-        clock=pygame.time.Clock()
-
-        if event.type == KEYDOWN:
-            if event.key == K_SPACE:
-                if not puck.playing:
-                    puck.start()
-
+            if event.type == pygame.KEYDOWN:
+                if event.key == K_SPACE:
+                    if not puck.playing:
+                        puck.start()
+ 
 
         # Update the puck
         puck.move()
         puck.check_hit(paddles)
         puck.check_miss(scores, score_text)
 
-        
-        # moving paddle when the user presses arrow keys (player A) or a/d keys (player B)
         keys = pygame.key.get_pressed()
+        # moving paddle when the user presses arrow keys (player A) or a/d keys (player B)
         if keys[pygame.K_a]:
             paddles[0].move_left(10)
         if keys[pygame.K_d]:
@@ -322,4 +320,4 @@ def game():
 
 
 if __name__ == '__main__':
-    menu()
+    menu()             
