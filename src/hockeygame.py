@@ -27,7 +27,7 @@ class Puck:
         """
         The puck used in the game
         """
-        self.image = pygame.image.load('bluecircle.png')  # Import the image
+        self.image = pygame.image.load('src/bluecircle.png')  # Import the image
         self.image = pygame.transform.scale(self.image, (50, 50))  # Resize the image
 
         # Get a reference to the surface's rect and set the position to the centre of the screen
@@ -158,7 +158,7 @@ class Paddle:
         :param x: The starting x position of the paddle
         :param y: The starting y position of the paddle
         """
-        self.image = pygame.image.load('blackrectangle.png')  # Load the image
+        self.image = pygame.image.load('src/blackrectangle.png')  # Load the image
         self.image = pygame.transform.scale(self.image, (200, 100))  # Resize the image
         # Get a reference to the surface's rect and set the position to the centre of the screen
         self.rect = self.image.get_rect(center=(x, y))
@@ -220,7 +220,8 @@ def menu():
                         Text((WIDTH / 2, 500), "SPACE TO START", BLACK, 32, anchor="center")]
 
     started = False  # Started flag
-
+    
+    
     # Main loop
     while not started:
         screen.fill(WHITE)
@@ -258,10 +259,7 @@ def draw_table():
 
 
 def game():
-    """
-    Plays the game
-    :return: None
-    """
+   
     # Create game objects
     puck = Puck()
     paddles = [Paddle(300, 550), Paddle(300, 50)]
