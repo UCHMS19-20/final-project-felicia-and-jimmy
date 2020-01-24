@@ -1,9 +1,10 @@
 import pygame
 
+#create list of available anchors for text
 available_anchors = ('topleft', 'bottomleft', 'topright', 'bottomright',
                      'midtop', 'midleft', 'midbottom', 'midright', 'center')
 
-
+#create text for use in game
 class Text(object):
     def __init__(self, position=(0, 0), text='', colour=(0, 0, 0), size=36, font='Lucida Sans', anchor='topleft'):
         self.position = position
@@ -12,7 +13,7 @@ class Text(object):
         self.font = font
         self.text = str(text)
         self.anchor = anchor
-
+        
         self.font_type = pygame.font.SysFont(self.font, self.size)
         self.surface = self.font_type.render(self.text, 1, self.colour)
 
