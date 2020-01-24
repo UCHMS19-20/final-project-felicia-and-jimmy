@@ -11,6 +11,8 @@ pygame.init()
 WIDTH, HEIGHT = 600, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Air Hockey")
+
+#create clock so that the display screen updates every second (defined by FPS)
 CLOCK = pygame.time.Clock()
 FPS = 60
 
@@ -24,9 +26,7 @@ RED = (255, 0, 0)
 # creating puck
 class Puck:
     def __init__(self):
-        """
-        The puck used in the game
-        """
+        #get the image of the puck from the img folder and scale it to the screen
         self.image = pygame.image.load('src/img/bluecircle.png')  # Import the image
         self.image = pygame.transform.scale(self.image, (50, 50))  # Resize the image
 
@@ -37,18 +37,15 @@ class Puck:
         self.velocity = pygame.math.Vector2()
         self.start_direction = 1
 
-        # Flags used in the game
+        #set conditions of playing and missed as false for later use in game logic
         self.playing = False
         self.missed = False
 
     def move(self):
-        """
-        Updates the position of the puck
-        :return: None
-        """
-        self.rect.move_ip(self.velocity)  # Update the position of the puck
+        #update the position of the puck
+        self.rect.move_ip(self.velocity) 
 
-        # If the puck hits a wall, bounce off it
+        # If the puck hits the left or right side of the screen, bounce off it
         if self.rect.left < 0:
             self.rect.left = 0
             self.bounce('x')
@@ -58,56 +55,39 @@ class Puck:
             self.bounce('x')
 
     def show(self):
-        """
-        Display the puck on the screen
-        :return: None
-        """
+        #display the puck on the screen
         screen.blit(self.image, self.rect)
 
     def reset(self):
-        """
-        Reset the position, velocity, and flags of the puck
-        :return: None
-        """
+        #reset the position and velocity of the puck
         self.velocity *= 0  # Set velocity to 0
         self.rect.center = (WIDTH / 2, HEIGHT / 2)  # Set position to centre of screen
 
-        # Reset flags
+        # reset conditions of puck for game logic
         self.playing = False
         self.missed = False
 
     def start(self):
-        """
-        Start the game
-        :return: None
-        """
+        #start the game by moving the puck in a random direction
         self.velocity.y = 8 * self.start_direction  # Set the velocity to 8, and set the direction
         self.velocity.rotate_ip(random.uniform(-45, 45))  # Rotate the velocity vector by some random amount
 
-        self.playing = True  # Set playing flag to True
+        #update playing condition of puck
+        self.playing = True  
 
     def bounce(self, axis):
-        """
-        Bounce the puck in the given axis
-        :param axis: The axis in which the velocity should be reflected
-        :return: None
-        """
+        #bounce the puck in the given axis
         if axis == 'x':
             self.velocity.x *= -1
         elif axis == 'y':
             self.velocity.y *= -1
             # When bouncing off a puck, rotate velocity by a small random amount
             self.velocity.rotate_ip(random.uniform(-15, 15))
-
-            self.velocity *= 1.05  # Increase the velocity
+            #increase the velocity
+            self.velocity *= 1.05  
 
     def check_hit(self, paddles):
-        """
-        Check for collision with the paddles
-        Cannot just use pygame.Rect.colliderect() as this may fail when the puck travels at greater speeds.
-        :param paddles: List containing the paddles
-        :return: None
-        """
+        #check collisions with paddles
         for paddle in paddles:
             if paddle.rect.y < HEIGHT / 2:  # If it's the top paddle then
                 if self.rect.top < paddle.rect.centery:  # If the puck has passed it
@@ -130,12 +110,7 @@ class Puck:
                         self.missed = True
 
     def check_miss(self, scores, score_text):
-        """
-        Check if the puck has missed a paddle, and awards a point accordingly
-        :param scores: List containing the scores
-        :param score_text: List containing the score Text objects
-        :return: None
-        """
+        #check if the puck has missed the paddle and give points accordingly
         if self.rect.top > HEIGHT:  # If the puck has gone off the bottom of the screen
             self.reset()  # Reset puck
             self.start_direction = -1  # Set start direction to other player
@@ -153,60 +128,40 @@ class Puck:
 
 class Paddle:
     def __init__(self, x, y):
-        """
-        The paddles controlled by the players
-        :param x: The starting x position of the paddle
-        :param y: The starting y position of the paddle
-        """
-        self.image = pygame.image.load('src/img/blackrectangle.png')  # Load the image
-        self.image = pygame.transform.scale(self.image, (200, 100))  # Resize the image
+        #defining paddles controlled by players--load the image from the img folder and resize
+        self.image = pygame.image.load('src/img/blackrectangle.png') 
+        self.image = pygame.transform.scale(self.image, (200, 100)) 
         # Get a reference to the surface's rect and set the position to the centre of the screen
         self.rect = self.image.get_rect(center=(x, y))
 
     def show(self):
-        """
-        Display the puck on the screen
-        :return: None
-        """
+        #display paddle on screen
         screen.blit(self.image, self.rect)
 
-
     def moveLeft(self, pixels):
+        #move the paddle left and stop the paddle when it reaches the left wall
         self.rect.x -=pixels
         if self.rect.x<0:
             self.rect.x=0
     def moveRight(self, pixels):
+        #move the paddle right and stop the paddle when it reaches the right wall
         self.rect.x +=pixels
         if self.rect.x>600:
             self.rect.x=600
 
     def move_left(self, pixels):
-        """
-        Move the paddle left
-        :param pixels: The distance to move the paddle
-        :return: None
-        """
-        self.rect.x -= pixels  # Update the position of the paddle
-        if self.rect.x < 0:  # Don't let the paddle go off the screen
+        #move left function for the other paddle
+        self.rect.x -= pixels 
+        if self.rect.x < 0: 
             self.rect.x = 0
 
     def move_right(self, pixels):
-        """
-        Move the paddle right
-        :param pixels: The distance to move the paddle
-        :return: None
-        """
-        self.rect.x += pixels  # Update the position of the paddle
-        if self.rect.right > WIDTH:  # Don't let the paddle go off the screen
+        #move right function for other paddle
+        self.rect.x += pixels 
+        if self.rect.right > WIDTH:  
             self.rect.right = WIDTH
 
-
-
 def menu():
-    """
-    Menu screen
-    :return: None
-    """
     # Set all the text to show on the menu screen
     menu_text = Text((WIDTH / 2, 100), "Air Hockey", BLACK, 64, anchor="center")
 
@@ -218,8 +173,8 @@ def menu():
                         Text((WIDTH / 2, 390), "towards you! You will gain a point by getting", BLACK, 16, anchor="center"),
                         Text((WIDTH / 2, 410), "it past your opponent.", BLACK, 16, anchor="center"),
                         Text((WIDTH / 2, 500), "SPACE TO START", BLACK, 32, anchor="center")]
-
-    started = False  # Started flag
+    #set started condition for use in game logic
+    started = False  
     
     
     
@@ -232,10 +187,10 @@ def menu():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-
+            #start game when space key is pressed
             if event.type == pygame.KEYDOWN:
                 if event.key == K_SPACE:
-                    started = True  # Start when space is pressed
+                    started = True  
 
         # Render all text to the screen
         menu_text.render(screen)
@@ -248,10 +203,7 @@ def menu():
 
 
 def draw_table():
-    """
-    Draws the hockey table on the screen
-    :return: None
-    """
+    #draw background on the screen
     screen.fill(WHITE)
     pygame.draw.circle(screen, RED, (int(WIDTH / 2), int(HEIGHT / 2)), 50, 5)
     pygame.draw.circle(screen, BLUE, (int(WIDTH / 2), 0), 100, 5)
@@ -272,6 +224,7 @@ def game():
 
     # Main loop
     while True:
+        #update screen with clock, draw background
         clock=pygame.time.Clock()
         draw_table()
 
@@ -279,14 +232,15 @@ def game():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-
+            
+            #start puck movement when space key is pressed
             if event.type == pygame.KEYDOWN:
                 if event.key == K_SPACE:
                     if not puck.playing:
                         puck.start()
  
 
-        # Update the puck
+        # Update the puck-check if it collides
         puck.move()
         puck.check_hit(paddles)
         puck.check_miss(scores, score_text)
@@ -311,11 +265,10 @@ def game():
             text.render(screen)
 
         pygame.display.update()  # Update the screen
-        CLOCK.tick(FPS)  # Limit game to FPS
+        CLOCK.tick(FPS)  # Limit game to frames per second
 
 
     pygame.display.update()
-    clock.tick(120)
     pygame.display.flip()
 
 
