@@ -2,7 +2,7 @@
 
 ## Flowcharts
 Overall: https://drive.google.com/file/d/1vHnwBFqK5P0kg9WayzzHQSRNNIkd_J1t/view?
-Paddle Movement: https://drive.google.com/file/d/1VJMxuD_LyDvqVZACPmxaBxleC2BhYW3c/view?usp=sharing
+Paddle Movement: https://drive.google.com/file/d/1VJMxuD_LyDvqVZACPmxaBxleC2BhYW3c/view?usp=sharin
 
 ## Presentation
 https://docs.google.com/presentation/d/1MjkV9PW9y30fDut9m-Bz-wOH6nXI1Bm0XcCUAIyoFCA/edit?usp=sharing
